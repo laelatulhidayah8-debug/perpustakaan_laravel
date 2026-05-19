@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Preview — SiPustaKA Laravel</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#1a3a2a;--accent:#c8a84b;--accent-lt:#f5e6bb;--surface:#f7f5f0;--card-bg:#ffffff;--text:#1c1c1c;--muted:#6c7a6a;--border:#e0dbd0}
+*{box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);margin:0}
+
+/* NAV TABS */
+.tab-bar{background:var(--primary);padding:0;border-bottom:3px solid var(--accent);display:flex;align-items:center;gap:0;overflow-x:auto}
+.tab-bar .brand{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--accent);padding:.7rem 1.3rem;white-space:nowrap;border-right:1px solid rgba(255,255,255,.1)}
+.tab-bar .brand span{color:#fff}
+.page-tab{background:none;border:none;color:rgba(255,255,255,.7);font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:500;padding:.7rem 1.1rem;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-3px;transition:all .2s;white-space:nowrap}
+.page-tab:hover{color:var(--accent);background:rgba(255,255,255,.07)}
+.page-tab.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(200,168,75,.12)}
+.page-tab i{margin-right:5px}
+
+/* BREADCRUMB */
+.bc{background:rgba(26,58,42,.88);padding:.45rem 1.5rem}
+.bc a{color:var(--accent-lt);text-decoration:none;font-size:.82rem}
+.bc span{color:rgba(255,255,255,.55);font-size:.82rem}
+.bc .sep{color:rgba(255,255,255,.3);margin:0 .4rem;font-size:.75rem}
+
+/* PAGE */
+.page{display:none;padding:1.8rem 1.5rem 3rem}
+.page.active{display:block}
+
+/* PAGE HEADER */
+.ph{background:var(--primary);color:#fff;border-radius:14px;padding:1.6rem 1.8rem;margin-bottom:1.6rem;border-left:5px solid var(--accent);position:relative;overflow:hidden}
+.ph::after{content:'';position:absolute;right:-25px;top:-25px;width:130px;height:130px;border-radius:50%;background:rgba(200,168,75,.12)}
+.ph h1{font-family:'Playfair Display',serif;font-size:1.6rem;margin:0}
+.ph p{margin:.3rem 0 0;color:rgba(255,255,255,.6);font-size:.87rem}
+
+/* CARD */
+.card{border:1px solid var(--border);border-radius:12px;background:var(--card-bg);box-shadow:0 2px 10px rgba(0,0,0,.05);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
+
+/* TABLE */
+.tbl thead{background:var(--primary);color:#fff}
+.tbl thead th{font-weight:500;font-size:.85rem;padding:.8rem 1rem;border:none}
+.tbl tbody td{padding:.75rem 1rem;vertical-align:middle;border-color:var(--border);font-size:.88rem}
+.tbl tbody tr:hover{background:rgba(200,168,75,.07)}
+
+/* BADGE */
+.bak{background:#d1f0e0;color:#1a6b3c;font-weight:600;padding:.3em .7em;border-radius:20px;font-size:.76rem}
+.bna{background:#fde8e8;color:#9b2424;font-weight:600;padding:.3em .7em;border-radius:20px;font-size:.76rem}
+
+/* BUTTONS */
+.btn-p{background:var(--primary);color:#fff;border:none;border-radius:8px;font-weight:500;font-size:.83rem;padding:.38rem .85rem;cursor:pointer;text-decoration:none;display:inline-block;transition:background .2s}
+.btn-p:hover{background:#254d38;color:#fff}
+.btn-o{border:2px solid var(--primary);color:var(--primary);background:transparent;border-radius:8px;font-weight:500;font-size:.83rem;padding:.36rem .85rem;cursor:pointer;text-decoration:none;display:inline-block;transition:all .2s}
+.btn-o:hover{background:var(--primary);color:#fff}
+.btn-a{background:var(--accent);color:var(--primary);border:none;border-radius:8px;font-weight:600;font-size:.83rem;padding:.38rem .85rem;cursor:pointer;text-decoration:none;display:inline-block}
+
+/* STAT CARD */
+.stat{border:1px solid var(--border);border-radius:12px;background:#fff;padding:1rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.stat .num{font-size:1.8rem;font-weight:700;line-height:1}
+.stat .lbl{color:var(--muted);font-size:.8rem;margin-top:.25rem}
+
+/* CATEGORY CARD */
+.kcard{border:1px solid var(--border);border-radius:12px;background:#fff;padding:1.2rem;height:100%;box-shadow:0 2px 8px rgba(0,0,0,.04);transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column}
+.kcard:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
+.kcard .icon-wrap{width:50px;height:50px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* DETAIL INFO */
+.info-row{display:flex;align-items:flex-start;padding:.8rem 0;border-bottom:1px solid var(--border)}
+.info-row:last-child{border:none}
+.info-icon{width:36px;height:36px;border-radius:50%;background:var(--accent-lt);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:.9rem;margin-top:.1rem}
+.info-lbl{color:var(--muted);font-size:.8rem;margin-bottom:.15rem}
+.info-val{font-weight:600;font-size:.9rem}
+
+/* SEARCH HIGHLIGHT */
+mark.hl{background:var(--accent-lt);color:var(--primary);border-radius:3px;padding:0 2px}
+
+/* FOOTER */
+footer{background:var(--primary);color:rgba(255,255,255,.5);text-align:center;padding:1rem;font-size:.8rem;border-top:3px solid var(--accent)}
+footer span{color:var(--accent)}
+
+/* CODE */
+code.kode{background:var(--accent-lt);color:var(--primary);padding:.2em .55em;border-radius:5px;font-size:.8rem;font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- NAV / TAB BAR -->
+<div class="tab-bar">
+    <div class="brand"><i class="bi bi-book-half me-1"></i>SiPusta<span>KA</span></div>
+    <button class="page-tab active" onclick="show('anggota-index')"><i class="bi bi-people"></i>/anggota</button>
+    <button class="page-tab" onclick="show('anggota-show')"><i class="bi bi-person-badge"></i>/anggota/1</button>
+    <button class="page-tab" onclick="show('kategori-index')"><i class="bi bi-tags"></i>/kategori</button>
+    <button class="page-tab" onclick="show('kategori-show')"><i class="bi bi-tag"></i>/kategori/1</button>
+    <button class="page-tab" onclick="show('kategori-search')"><i class="bi bi-search"></i>/search/programming</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PAGE 1: /anggota -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div id="anggota-index" class="page active">
+    <div class="bc"><a href="#">Beranda</a><span class="sep">›</span><span>Anggota</span></div>
+    <div style="max-width:1100px;margin:0 auto;padding:1.5rem 1rem 3rem">
+        <div class="ph">
+            <h1><i class="bi bi-people-fill me-2"></i>Daftar Anggota Perpustakaan</h1>
+            <p>Kelola seluruh data anggota perpustakaan SiPustaKA</p>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3"><div class="stat"><div class="num" style="color:var(--primary)">6</div><div class="lbl">Total Anggota</div></div></div>
+            <div class="col-6 col-md-3"><div class="stat"><div class="num" style="color:#1a6b3c">4</div><div class="lbl">Anggota Aktif</div></div></div>
+            <div class="col-6 col-md-3"><div class="stat"><div class="num" style="color:#9b2424">2</div><div class="lbl">Non-Aktif</div></div></div>
+            <div class="col-6 col-md-3"><div class="stat"><div class="num" style="color:var(--accent)">2024</div><div class="lbl">Tahun Berjalan</div></div></div>
+        </div>
+
+        <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.3rem;border-bottom:1px solid var(--border)">
+                <strong style="font-family:'Playfair Display',serif"><i class="bi bi-table me-2" style="color:var(--accent)"></i>Tabel Anggota</strong>
+                <span style="background:var(--accent-lt);color:var(--primary);padding:.3em .8em;border-radius:20px;font-size:.8rem;font-weight:600">6 Anggota</span>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="table tbl mb-0">
+                    <thead><tr><th>No</th><th>Kode Anggota</th><th>Nama</th><th>Email</th><th>Kota</th><th>Status</th><th class="text-center">Aksi</th></tr></thead>
+                    <tbody id="anggota-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PAGE 2: /anggota/1 -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div id="anggota-show" class="page">
+    <div class="bc"><a href="#">Beranda</a><span class="sep">›</span><a href="#" onclick="show('anggota-index');return false">Anggota</a><span class="sep">›</span><span id="show-name">Budi Santoso</span></div>
+    <div style="max-width:960px;margin:0 auto;padding:1.5rem 1rem 3rem">
+        <div class="ph">
+            <h1><i class="bi bi-person-badge me-2"></i>Detail Anggota</h1>
+            <p>Informasi lengkap anggota perpustakaan</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card p-4 text-center h-100">
+                    <div id="avatar" class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle"
+                         style="width:80px;height:80px;background:var(--primary);font-family:'Playfair Display',serif;font-size:2rem;color:var(--accent)">B</div>
+                    <h5 style="font-family:'Playfair Display',serif" id="d-nama">Budi Santoso</h5>
+                    <p class="text-muted mb-2" id="d-email">budi@email.com</p>
+                    <div class="mb-3" id="d-status-badge"><span class="bak"><i class="bi bi-patch-check me-1"></i>Anggota Aktif</span></div>
+                    <code class="kode" id="d-kode">AGT-001</code>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card h-100">
+                    <div style="padding:.9rem 1.3rem;border-bottom:1px solid var(--border)">
+                        <strong style="font-family:'Playfair Display',serif"><i class="bi bi-info-circle me-2" style="color:var(--accent)"></i>Informasi Lengkap</strong>
+                    </div>
+                    <div class="px-4">
+                        <div class="info-row"><div class="info-icon"><i class="bi bi-upc-scan" style="color:var(--primary)"></i></div><div><div class="info-lbl">Kode Anggota</div><code class="kode" id="d-kode2">AGT-001</code></div></div>
+                        <div class="info-row"><div class="info-icon"><i class="bi bi-person-fill" style="color:var(--primary)"></i></div><div><div class="info-lbl">Nama Lengkap</div><div class="info-val" id="d-nama2">Budi Santoso</div></div></div>
+                        <div class="info-row"><div class="info-icon"><i class="bi bi-envelope-fill" style="color:var(--primary)"></i></div><div><div class="info-lbl">Email</div><div class="info-val" id="d-email2">budi@email.com</div></div></div>
+                        <div class="info-row"><div class="info-icon"><i class="bi bi-telephone-fill" style="color:var(--primary)"></i></div><div><div class="info-lbl">Telepon</div><div class="info-val" id="d-telp">081234567890</div></div></div>
+                        <div class="info-row"><div class="info-icon"><i class="bi bi-geo-alt-fill" style="color:var(--primary)"></i></div><div><div class="info-lbl">Alamat</div><div class="info-val" id="d-alamat">Jl. Mawar No. 10, Jakarta Selatan</div></div></div>
+                        <div class="info-row"><div class="info-icon"><i class="bi bi-toggle-on" style="color:var(--primary)"></i></div><div><div class="info-lbl">Status</div><div id="d-status2"><span class="bak"><i class="bi bi-check-circle me-1"></i>Aktif</span></div></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <a href="#" onclick="show('anggota-index');return false" class="btn-o"><i class="bi bi-arrow-left me-2"></i>Kembali ke Daftar Anggota</a>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PAGE 3: /kategori -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div id="kategori-index" class="page">
+    <div class="bc"><a href="#">Beranda</a><span class="sep">›</span><span>Kategori</span></div>
+    <div style="max-width:1100px;margin:0 auto;padding:1.5rem 1rem 3rem">
+        <div class="ph">
+            <h1><i class="bi bi-tags-fill me-2"></i>Kategori Buku</h1>
+            <p>Jelajahi koleksi buku berdasarkan kategori</p>
+        </div>
+        <div class="mb-4 d-flex gap-2" style="max-width:420px">
+            <input id="srch" type="text" class="form-control" placeholder="Cari kategori..." style="border-color:var(--border);border-radius:10px 0 0 10px;font-size:.9rem">
+            <button class="btn-p px-3" style="border-radius:0 10px 10px 0" onclick="doSearch()"><i class="bi bi-search"></i></button>
+        </div>
+        <div class="row g-4" id="kategori-cards"></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PAGE 4: /kategori/1 -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div id="kategori-show" class="page">
+    <div class="bc"><a href="#">Beranda</a><span class="sep">›</span><a href="#" onclick="show('kategori-index');return false">Kategori</a><span class="sep">›</span><span id="ks-title">Programming</span></div>
+    <div style="max-width:1100px;margin:0 auto;padding:1.5rem 1rem 3rem">
+        <div class="ph">
+            <h1><i id="ks-icon" class="bi bi-code-slash me-2"></i><span id="ks-h1">Programming</span></h1>
+            <p id="ks-desc">Buku pemrograman dan coding</p>
+        </div>
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card p-4">
+                    <strong style="font-family:'Playfair Display',serif;display:block;margin-bottom:.9rem"><i class="bi bi-info-circle me-2" style="color:var(--accent)"></i>Info Kategori</strong>
+                    <table style="font-size:.88rem;width:100%">
+                        <tr><td style="color:var(--muted);padding:.35rem 0">ID</td><td><code class="kode" id="ks-id">KAT-001</code></td></tr>
+                        <tr><td style="color:var(--muted);padding:.35rem 0">Nama</td><td style="font-weight:600" id="ks-nama">Programming</td></tr>
+                        <tr><td style="color:var(--muted);padding:.35rem 0">Deskripsi</td><td id="ks-desc2">—</td></tr>
+                        <tr><td style="color:var(--muted);padding:.35rem 0">Jumlah Buku</td><td><span class="bak" id="ks-jml">25 Buku</span></td></tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div style="padding:.9rem 1.3rem;border-bottom:1px solid var(--border)"><strong style="font-family:'Playfair Display',serif"><i class="bi bi-journals me-2" style="color:var(--accent)"></i>Daftar Buku</strong></div>
+                    <div style="overflow-x:auto">
+                        <table class="table tbl mb-0">
+                            <thead><tr><th>No</th><th>Judul</th><th>Penulis</th><th>Tahun</th><th>Stok</th></tr></thead>
+                            <tbody id="ks-buku"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="#" onclick="show('kategori-index');return false" class="btn-o"><i class="bi bi-arrow-left me-2"></i>Kembali ke Kategori</a>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PAGE 5: /kategori/search/programming -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div id="kategori-search" class="page">
+    <div class="bc"><a href="#">Beranda</a><span class="sep">›</span><a href="#" onclick="show('kategori-index');return false">Kategori</a><span class="sep">›</span><span>Pencarian</span></div>
+    <div style="max-width:1100px;margin:0 auto;padding:1.5rem 1rem 3rem">
+        <div class="ph">
+            <h1><i class="bi bi-search me-2"></i>Hasil Pencarian</h1>
+            <p>Menampilkan hasil untuk: <strong>"<span id="kw-display">programming</span>"</strong></p>
+        </div>
+        <div class="mb-4 d-flex gap-2" style="max-width:420px">
+            <input id="srch2" type="text" class="form-control" value="programming" style="border-color:var(--border);border-radius:10px 0 0 10px;font-size:.9rem">
+            <button class="btn-p px-3" style="border-radius:0 10px 10px 0" onclick="doSearch2()"><i class="bi bi-search"></i></button>
+        </div>
+        <div class="mb-3" id="srch-count"></div>
+        <div class="row g-4" id="srch-cards"></div>
+        <div class="mt-4"><a href="#" onclick="show('kategori-index');return false" class="btn-o"><i class="bi bi-arrow-left me-2"></i>Kembali ke Kategori</a></div>
+    </div>
+</div>
+
+<footer><p class="mb-0">&copy; 2024 <span>SiPustaKA</span> — Sistem Informasi Perpustakaan Digital. Laravel & Bootstrap 5.</p></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────
+const anggota = [
+  {id:1,kode:'AGT-001',nama:'Budi Santoso',email:'budi@email.com',telepon:'081234567890',alamat:'Jl. Mawar No. 10, Jakarta Selatan',kota:'Jakarta',status:'Aktif'},
+  {id:2,kode:'AGT-002',nama:'Siti Rahayu',email:'siti.rahayu@email.com',telepon:'082345678901',alamat:'Jl. Kenanga No. 5, Surabaya',kota:'Surabaya',status:'Aktif'},
+  {id:3,kode:'AGT-003',nama:'Ahmad Fauzi',email:'fauzi.ahmad@email.com',telepon:'083456789012',alamat:'Jl. Dago No. 22, Bandung',kota:'Bandung',status:'Non-Aktif'},
+  {id:4,kode:'AGT-004',nama:'Dewi Lestari',email:'dewi.lestari@email.com',telepon:'084567890123',alamat:'Jl. Malioboro No. 8, Yogyakarta',kota:'Yogyakarta',status:'Aktif'},
+  {id:5,kode:'AGT-005',nama:'Rizky Pratama',email:'rizky.p@email.com',telepon:'085678901234',alamat:'Jl. Pemuda No. 3, Semarang',kota:'Semarang',status:'Aktif'},
+  {id:6,kode:'AGT-006',nama:'Nurul Hidayah',email:'nurul.h@email.com',telepon:'086789012345',alamat:'Jl. Ijen No. 15, Malang',kota:'Malang',status:'Non-Aktif'},
+];
+
+const kategori = [
+  {id:1,nama:'Programming',deskripsi:'Buku pemrograman dan coding — mulai dari dasar hingga tingkat lanjut.',jumlah_buku:25,icon:'code-slash'},
+  {id:2,nama:'Matematika',deskripsi:'Buku matematika mencakup aljabar, kalkulus, statistika, dan teori bilangan.',jumlah_buku:18,icon:'calculator'},
+  {id:3,nama:'Sastra & Fiksi',deskripsi:'Karya sastra Indonesia dan dunia, novel, puisi, dan antologi cerpen.',jumlah_buku:32,icon:'book-half'},
+  {id:4,nama:'Sejarah',deskripsi:'Buku sejarah Indonesia, Asia, dan dunia dari berbagai periode.',jumlah_buku:14,icon:'hourglass-split'},
+  {id:5,nama:'Sains & Teknologi',deskripsi:'Fisika, kimia, biologi, astronomi, dan perkembangan teknologi terkini.',jumlah_buku:21,icon:'cpu'},
+];
+
+const buku = {
+  1:[{judul:'Clean Code',penulis:'Robert C. Martin',tahun:2008,stok:3},{judul:'Laravel: Up & Running',penulis:'Matt Stauffer',tahun:2022,stok:5},{judul:'The Pragmatic Programmer',penulis:'Hunt & Thomas',tahun:2019,stok:2},{judul:'Design Patterns',penulis:'Gang of Four',tahun:1994,stok:1},{judul:"You Don't Know JS",penulis:'Kyle Simpson',tahun:2020,stok:4}],
+  2:[{judul:'Kalkulus Jilid I',penulis:'James Stewart',tahun:2015,stok:6},{judul:'Statistika Dasar',penulis:'Sudjana',tahun:2018,stok:4},{judul:'Aljabar Linear',penulis:'Howard Anton',tahun:2013,stok:3},{judul:'Teori Bilangan',penulis:'Budi Cahyono',tahun:2017,stok:2}],
+  3:[{judul:'Laskar Pelangi',penulis:'Andrea Hirata',tahun:2005,stok:7},{judul:'Bumi Manusia',penulis:'Pramoedya A. Toer',tahun:1980,stok:4},{judul:'Tenggelamnya Kapal Van Der Wijck',penulis:'Hamka',tahun:1938,stok:3},{judul:'Harry Potter & Batu Bertuah',penulis:'J.K. Rowling',tahun:1997,stok:5},{judul:'Dilan 1990',penulis:'Pidi Baiq',tahun:2014,stok:6}],
+  4:[{judul:'Sejarah Indonesia Modern',penulis:'M.C. Ricklefs',tahun:2012,stok:2},{judul:'Revolusi Belum Selesai',penulis:'Taufik Abdullah',tahun:2001,stok:1},{judul:'Perang Dunia II',penulis:'Anthony Beevor',tahun:2012,stok:3}],
+  5:[{judul:'Fisika Dasar Jilid I',penulis:'Halliday & Resnick',tahun:2014,stok:5},{judul:'Kimia Organik',penulis:'John McMurry',tahun:2011,stok:3},{judul:'A Brief History of Time',penulis:'Stephen Hawking',tahun:1988,stok:4},{judul:'The Gene',penulis:'Siddhartha Mukherjee',tahun:2016,stok:2},{judul:'Sapiens',penulis:'Yuval Noah Harari',tahun:2011,stok:6}],
+};
+
+// ── BADGE HELPERS ────────────────────────────────────────────────────────
+const badgeStatus = s => s==='Aktif'
+  ? `<span class="bak"><i class="bi bi-check-circle me-1"></i>Aktif</span>`
+  : `<span class="bna"><i class="bi bi-x-circle me-1"></i>Non-Aktif</span>`;
+
+const stokBadge = n => n>0
+  ? `<span class="bak">${n} tersedia</span>`
+  : `<span class="bna">Habis</span>`;
+
+// ── BUILD ANGGOTA TABLE ──────────────────────────────────────────────────
+function buildAnggotaTable(){
+  const tbody = document.getElementById('anggota-tbody');
+  tbody.innerHTML = anggota.map((a,i)=>`
+    <tr>
+      <td class="text-muted fw-semibold">${i+1}</td>
+      <td><code class="kode">${a.kode}</code></td>
+      <td class="fw-semibold"><i class="bi bi-person-circle me-1" style="color:var(--muted)"></i>${a.nama}</td>
+      <td class="text-muted">${a.email}</td>
+      <td class="text-muted"><i class="bi bi-geo-alt me-1"></i>${a.kota}</td>
+      <td>${badgeStatus(a.status)}</td>
+      <td class="text-center"><a href="#" onclick="showAnggota(${a.id});return false" class="btn-p">
+        <i class="bi bi-eye me-1"></i>Detail</a></td>
+    </tr>`).join('');
+}
+
+// ── SHOW ANGGOTA DETAIL ──────────────────────────────────────────────────
+function showAnggota(id){
+  const a = anggota.find(x=>x.id===id);
+  document.getElementById('show-name').textContent = a.nama;
+  document.getElementById('avatar').textContent = a.nama[0].toUpperCase();
+  document.getElementById('d-nama').textContent = a.nama;
+  document.getElementById('d-nama2').textContent = a.nama;
+  document.getElementById('d-email').textContent = a.email;
+  document.getElementById('d-email2').textContent = a.email;
+  document.getElementById('d-kode').textContent = a.kode;
+  document.getElementById('d-kode2').textContent = a.kode;
+  document.getElementById('d-telp').textContent = a.telepon;
+  document.getElementById('d-alamat').textContent = a.alamat;
+  document.getElementById('d-status-badge').innerHTML = a.status==='Aktif'
+    ? `<span class="bak"><i class="bi bi-patch-check me-1"></i>Anggota Aktif</span>`
+    : `<span class="bna"><i class="bi bi-patch-exclamation me-1"></i>Non-Aktif</span>`;
+  document.getElementById('d-status2').innerHTML = badgeStatus(a.status);
+  show('anggota-show');
+}
+
+// ── BUILD KATEGORI CARDS ─────────────────────────────────────────────────
+function buildKategoriCards(list=kategori, kw=''){
+  const container = document.getElementById('kategori-cards');
+  const hl = s => kw ? s.replace(new RegExp(`(${kw})`,'gi'), '<mark class="hl">$1</mark>') : s;
+  container.innerHTML = list.map(k=>`
+    <div class="col-sm-6 col-lg-4">
+      <div class="kcard">
+        <div class="d-flex align-items-center mb-3">
+          <div class="icon-wrap me-3"><i class="bi bi-${k.icon} fs-4" style="color:var(--accent)"></i></div>
+          <div>
+            <h5 class="mb-0 fw-bold" style="font-family:'Playfair Display',serif">${hl(k.nama)}</h5>
+            <span class="text-muted small">KAT-${String(k.id).padStart(3,'0')}</span>
+          </div>
+        </div>
+        <p class="text-muted small mb-3 flex-grow-1">${hl(k.deskripsi)}</p>
+        <div class="d-flex align-items-center justify-content-between">
+          <span style="background:var(--accent-lt);color:var(--primary);padding:.3em .75em;border-radius:20px;font-size:.8rem;font-weight:600">
+            <i class="bi bi-journal-bookmark me-1"></i>${k.jumlah_buku} Buku</span>
+          <a href="#" onclick="showKategori(${k.id});return false" class="btn-p"><i class="bi bi-arrow-right me-1"></i>Lihat</a>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ── SHOW KATEGORI DETAIL ─────────────────────────────────────────────────
+function showKategori(id){
+  const k = kategori.find(x=>x.id===id);
+  document.getElementById('ks-title').textContent = k.nama;
+  document.getElementById('ks-h1').textContent = k.nama;
+  document.getElementById('ks-icon').className = `bi bi-${k.icon} me-2`;
+  document.getElementById('ks-desc').textContent = k.deskripsi;
+  document.getElementById('ks-id').textContent = 'KAT-'+String(k.id).padStart(3,'0');
+  document.getElementById('ks-nama').textContent = k.nama;
+  document.getElementById('ks-desc2').textContent = k.deskripsi;
+  document.getElementById('ks-jml').innerHTML = `<i class="bi bi-journal me-1"></i>${k.jumlah_buku} Buku`;
+  const books = buku[id]||[];
+  document.getElementById('ks-buku').innerHTML = books.map((b,i)=>`
+    <tr>
+      <td class="text-muted fw-semibold">${i+1}</td>
+      <td class="fw-semibold"><i class="bi bi-book me-1" style="color:var(--muted)"></i>${b.judul}</td>
+      <td class="text-muted">${b.penulis}</td>
+      <td class="text-muted">${b.tahun}</td>
+      <td>${stokBadge(b.stok)}</td>
+    </tr>`).join('');
+  show('kategori-show');
+}
+
+// ── SEARCH ───────────────────────────────────────────────────────────────
+let currentKw = 'programming';
+
+function doSearch(){
+  const kw = document.getElementById('srch').value.trim();
+  if(!kw) return;
+  runSearch(kw);
+}
+function doSearch2(){
+  const kw = document.getElementById('srch2').value.trim();
+  if(!kw) return;
+  runSearch(kw);
+}
+function runSearch(kw){
+  currentKw = kw;
+  document.getElementById('srch2').value = kw;
+  document.getElementById('kw-display').textContent = kw;
+  const hasil = kategori.filter(k =>
+    k.nama.toLowerCase().includes(kw.toLowerCase()) ||
+    k.deskripsi.toLowerCase().includes(kw.toLowerCase())
+  );
+  const hl = s => s.replace(new RegExp(`(${kw})`,'gi'), '<mark class="hl">$1</mark>');
+  const count = document.getElementById('srch-count');
+  count.innerHTML = hasil.length > 0
+    ? `<span style="background:var(--accent-lt);color:var(--primary);padding:.35em .9em;border-radius:20px;font-size:.85rem;font-weight:600"><i class="bi bi-check-circle me-1"></i>Ditemukan ${hasil.length} kategori</span>`
+    : `<span style="background:#fde8e8;color:#9b2424;padding:.35em .9em;border-radius:20px;font-size:.85rem;font-weight:600"><i class="bi bi-x-circle me-1"></i>Tidak ditemukan kategori</span>`;
+  document.getElementById('srch-cards').innerHTML = hasil.length === 0
+    ? `<div class="col-12"><div class="card p-5 text-center"><i class="bi bi-search fs-1 mb-3" style="color:var(--muted)"></i><h5 class="text-muted">Tidak ada kategori yang sesuai dengan "<strong>${kw}</strong>"</h5></div></div>`
+    : hasil.map(k=>`
+      <div class="col-sm-6 col-lg-4">
+        <div class="kcard" style="border:2px solid var(--accent)">
+          <div class="d-flex align-items-center mb-3">
+            <div class="icon-wrap me-3"><i class="bi bi-${k.icon} fs-4" style="color:var(--accent)"></i></div>
+            <div>
+              <h5 class="mb-0 fw-bold" style="font-family:'Playfair Display',serif">${hl(k.nama)}</h5>
+              <span class="text-muted small">KAT-${String(k.id).padStart(3,'0')}</span>
+            </div>
+          </div>
+          <p class="text-muted small mb-3 flex-grow-1">${hl(k.deskripsi)}</p>
+          <div class="d-flex align-items-center justify-content-between">
+            <span style="background:var(--accent-lt);color:var(--primary);padding:.3em .75em;border-radius:20px;font-size:.8rem;font-weight:600">
+              <i class="bi bi-journal-bookmark me-1"></i>${k.jumlah_buku} Buku</span>
+            <a href="#" onclick="showKategori(${k.id});return false" class="btn-p"><i class="bi bi-arrow-right me-1"></i>Lihat</a>
+          </div>
+        </div>
+      </div>`).join('');
+  show('kategori-search');
+}
+
+// ── PAGE SWITCHER ────────────────────────────────────────────────────────
+function show(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.page-tab').forEach(t=>t.classList.remove('active'));
+  const tabMap = {'anggota-index':0,'anggota-show':1,'kategori-index':2,'kategori-show':3,'kategori-search':4};
+  document.querySelectorAll('.page-tab')[tabMap[id]]?.classList.add('active');
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────
+buildAnggotaTable();
+buildKategoriCards();
+runSearch('programming');
+</script>
+</body>
+</html>
